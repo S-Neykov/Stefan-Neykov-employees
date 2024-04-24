@@ -12,39 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class Employee {
-    int employeeId;
-    int projectId;
-    LocalDate dateFrom;
-    LocalDate dateTo;
-
-    public Employee(int employeeId, int projectId, LocalDate dateFrom, LocalDate dateTo) {
-        this.employeeId = employeeId;
-        this.projectId = projectId;
-        this.dateFrom = dateFrom;
-        this.dateTo = dateTo;
-    }
-
-    public boolean equalsById(Employee employee) {
-        return this.employeeId == employee.employeeId;
-    }
-}
-
-class OverlapData {
-    Employee employee1;
-    Employee employee2;
-    int projectId;
-    int overlapDays;
-
-    public OverlapData(Employee employee1, Employee employee2, int projectId, int overlapDays) {
-        this.employee1 = employee1;
-        this.employee2 = employee2;
-        this.projectId = projectId;
-        this.overlapDays = overlapDays;
-    }
-
-}
-
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -54,12 +21,15 @@ public class Main {
         List<OverlapData> overlapData = getOverlapData(teamsWithWorkers);
         // Get the employees which have worked the longest together
         OverlapData longestOverlapData = overlapData.stream().max(Comparator.comparingInt(e -> e.overlapDays)).orElse(null);
-
         if (longestOverlapData == null) {
             System.out.println("No 2 employees have worked together.");
             return;
         }
+
+        System.out.println("\nEmployees which have worked the longest together are with IDs " + longestOverlapData.employee1.employeeId + " and " + longestOverlapData.employee2.employeeId + " with " + longestOverlapData.overlapDays + " days.");
+        System.out.println("Common projects for the longest working pair:");
         System.out.println("Employee ID #1, Employee ID #2, Project ID, Days Worked");
+
         // find and print all common projects (and the overlap data) for the pair
         List<OverlapData> commonProjectsOverlapData = overlapData.stream()
                 .filter(e -> (e.employee1.equalsById(longestOverlapData.employee1) && e.employee2.equalsById(longestOverlapData.employee2))
@@ -85,7 +55,7 @@ public class Main {
      */
     private static String chooseFile() throws IOException {
         List<String> csvFiles = getCsvFilesInCurrentDirectory();
-        System.out.println("Choose a file to load:");
+        System.out.println("Choose a file to load (enter the file number):");
         for (int i = 0; i < csvFiles.size(); i++) {
             System.out.println((i + 1) + ". " + csvFiles.get(i));
         }
